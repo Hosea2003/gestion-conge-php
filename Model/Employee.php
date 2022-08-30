@@ -10,7 +10,7 @@ function getEmployees(){
     $Employees=array();
     foreach($employees as $employee){
         $employee=explode("~", $employee);
-        $Employees[] = new Employee($employee[0], $employee[1], $employee[2], getUserByGroup($employee[0], "user"));
+        $Employees[] = new Employee($employee[0], $employee[1], $employee[2], $employee[3],getUserByGroup($employee[0], "user"));
     }
     return $Employees;
 }
@@ -20,6 +20,18 @@ function getEmployeeById($id){
     foreach($employees as $emp)
         if($emp->getId()==$id)
             return $emp;
+    return null;
+}
+
+function getEmployeesById($id){
+    $employees = getEmployees();
+    $result=array(0=>null, 1=>$employees);
+    foreach($employees as $emp)
+        if($emp->getId()==$id){
+            $result[0]=$emp;
+            break;
+        }
+    return $result;
 }
 
 class Employee
@@ -28,6 +40,7 @@ class Employee
     private $first_name;
     private $name;
     private $user;
+    private $address;
 
     /**
      * @param $id
@@ -35,12 +48,13 @@ class Employee
      * @param $name
      */
 
-    public function __construct($id, $first_name, $name, $user)
+    public function __construct($id, $first_name, $name, $address, $user)
     {
         $this->id = $id;
         $this->first_name = $first_name;
         $this->name = $name;
         $this->user=$user;
+        $this->address = $address;
     }
 
     /**
@@ -91,6 +105,15 @@ class Employee
         $this->name = $name;
     }
 
+    public function getAddress(){
+        return $this->address;
+    }
+
+    public function setAddress($address)
+    {
+        $this->address = $address;
+    }
+
     /**
      * @return mixed
      */
@@ -99,6 +122,23 @@ class Employee
         return $this->user;
     }
 
+    public function ToString():string{
+        return $this->id."~".$this->first_name."~".$this->name."~".$this->address."#";
+    }
 
+    public static function add_employee(Employee $employee){
+        file_put_contents(dirname(__DIR__)."\\Files\\Employee.txt", $employee->ToString(), FILE_APPEND);
+    }
 
+    public static function getNextId():int{
+        return count(getEmployees())+1;
+    }
+
+    public function update($employees){
+        $content = "";
+        foreach($employees as $e){
+            $content.=$e->ToString();
+        }
+        file_put_contents(dirname(__DIR__)."\\Files\\Employee.txt", $content);
+    }
 }

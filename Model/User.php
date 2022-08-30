@@ -121,5 +121,25 @@ class User
         return $this->model;
     }
 
+    public function ToString():string{
+        return $this->id."~".$this->email."~".$this->password."~".$this->group."~".$this->model."#";
+    }
+
+    public static function add_user(User $user){
+        file_put_contents(dirname(__DIR__)."\\Files\\User.txt", "\n".$user->ToString(), FILE_APPEND);
+    }
+
+    public static function getNextId():int{
+        return count(getUsers())+1;
+    }
+
+    public static function getUserById($id){
+        $users =getUsers();
+        foreach($users as $u){
+            if($u->getId()==$id)
+                return $u;
+        }
+        return null;
+    }
 
 }

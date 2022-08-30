@@ -22,7 +22,7 @@ else if($_SESSION["group"]=="admin"){
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Navbar</a>
+        <a class="navbar-brand" href="#">Profil</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -32,7 +32,7 @@ else if($_SESSION["group"]=="admin"){
                     <a class="nav-link" href="#">Historique congé <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Demandé congé</a>
+                    <a class="nav-link" href="demander.php">Demander congé</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Modifier profil</a>

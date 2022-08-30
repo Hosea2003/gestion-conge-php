@@ -13,8 +13,9 @@ if(isset($_SESSION["group"])){
         if(isset($_GET["search"])){
             $em=getEmployees();
             $employees=array();
+            $word = strtolower($_GET["word"]);
             foreach($em as $e){
-                if($e->getName()==$_GET["word"] || $e->getFirstName()==$_GET["word"])
+                if(str_contains(strtolower($e->getFirstName()), $word) || str_contains(strtolower($e->getName()), $_GET["word"]))
                     $employees[]=$e;
             }
         }
@@ -116,9 +117,9 @@ else{
                                     </div>
                                 </div>
                                 <div>
-                                    <div class="small text-gray-500"><?php echo $conge->getDateDebut()."-".$conge->getDateFin()?></div>
-                                    <span class="font-weight-bold"> <?php echo $conge->getEmployee()->getFirstName()." ".$conge->getEmployee()->getName()?>
-                                    veux prendre un congé
+                                    <div class="small text-gray-500"><?php echo $conge->getDateEnvoi()->format("d M Y")?></div>
+                                    <span class="font-weight-bold"> <?php echo $conge->getEmployee()->getFirstName()." ".$conge->getEmployee()->getName()." 
+                                    veux prendre un congé ".$conge->getDateDebut()->format("d M Y")." au ".$conge->getDateFin()->format("d M Y")?>
                                 </span>
                                 </div>
                             </a>
@@ -144,10 +145,6 @@ else{
                                 <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Profile
                             </a>
-                            <a class="dropdown-item" href="#">
-                                <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Settings
-                            </a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -167,8 +164,8 @@ else{
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800">Tableau de bord</h1>
-                    <!--<a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                            class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>-->
+                    <a href="add-employee.php" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                            class="fas fa-plus fa-sm text-white-50"></i>  Ajouter Employé</a>
                 </div>
 
                 <!-- Content Row -->
@@ -193,7 +190,7 @@ else{
                     </div>
 
                     <!-- demande de congé -->
-                    <div class="col-xl-3 col-md-6 mb-4">
+                    <a class="col-xl-3 col-md-6 mb-4" href="demande-conge.php" style="text-decoration:none;">
                         <div class="card border-left-success shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
@@ -208,10 +205,10 @@ else{
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
 
                     <!-- Employé en congé -->
-                    <div class="col-xl-3 col-md-6 mb-4">
+                    <a class="col-xl-3 col-md-6 mb-4" style="text-decoration:none;" href="#">
                         <div class="card border-left-info shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
@@ -237,10 +234,10 @@ else{
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
 
                     <!-- Demande de congé -->
-                    <div class="col-xl-3 col-md-6 mb-4">
+                    <a class="col-xl-3 col-md-6 mb-4" href="#" style="text-decoration:none;">
                         <div class="card border-left-warning shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
@@ -256,7 +253,7 @@ else{
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
 
                 <!-- Content Row -->
             <div class="row">
@@ -279,7 +276,7 @@ else{
                         <td><?php echo $employee->getName()?></td>
                         <td><?php echo $employee->getUser()->getEmail()?></td>
                         <td>
-                            <a href="#" class="btn btn-primary">Modifer</a>
+                            <a href=<?php echo "update-employee.php?id=".$employee->getId()?> class="btn btn-primary">Modifer</a>
                             <a href="#" class="btn btn-danger">Delete</a>
                         </td>
                     </tr>
