@@ -24,6 +24,7 @@
         User::add_user($user);
 
         $employee = new Employee($id_emp, $first, $name, $adress, $user);
+        $employee->isBloque=0;
         Employee::add_employee($employee);
         header("location:admin.php");
     }

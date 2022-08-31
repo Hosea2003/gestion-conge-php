@@ -142,4 +142,23 @@ class User
         return null;
     }
 
+    public static function getUsersUser($id){
+        $users = getUsers();
+        foreach($users as $u){
+            if($u->getId()==$id){
+                return array(0=>$u, 1=>$users);
+            }
+        }
+        return null;
+    }
+
+    public function changePassword($new_pass, $users){
+        $this->password=$new_pass;
+        $content="";
+        foreach($users as $u){
+            $content.=$u->ToString();
+        }
+        file_put_contents(dirname(__DIR__)."\\Files\\User.txt", $content);
+    }
+
 }

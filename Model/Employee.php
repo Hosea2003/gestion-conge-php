@@ -10,7 +10,9 @@ function getEmployees(){
     $Employees=array();
     foreach($employees as $employee){
         $employee=explode("~", $employee);
-        $Employees[] = new Employee($employee[0], $employee[1], $employee[2], $employee[3],getUserByGroup($employee[0], "user"));
+        $new_employee = new Employee($employee[0], $employee[1], $employee[2], $employee[3],getUserByGroup($employee[0], "user"));
+        $new_employee->isBloque=$employee[4];
+        $Employees[] = $new_employee;
     }
     return $Employees;
 }
@@ -25,7 +27,7 @@ function getEmployeeById($id){
 
 function getEmployeesById($id){
     $employees = getEmployees();
-    $result=array(0=>null, 1=>$employees);
+    $result=array(1=>$employees);
     foreach($employees as $emp)
         if($emp->getId()==$id){
             $result[0]=$emp;
@@ -41,6 +43,7 @@ class Employee
     private $name;
     private $user;
     private $address;
+    public $isBloque;
 
     /**
      * @param $id
@@ -123,7 +126,7 @@ class Employee
     }
 
     public function ToString():string{
-        return $this->id."~".$this->first_name."~".$this->name."~".$this->address."#";
+        return $this->id."~".$this->first_name."~".$this->name."~".$this->address."~".$this->isBloque."#";
     }
 
     public static function add_employee(Employee $employee){
@@ -140,5 +143,13 @@ class Employee
             $content.=$e->ToString();
         }
         file_put_contents(dirname(__DIR__)."\\Files\\Employee.txt", $content);
+    }
+
+    public static function getEmployeeByUser($id){
+        foreach(getEmployees() as $e){
+            if($e->getUser()->getId()==$id){
+                return $e;
+            }
+        }
     }
 }

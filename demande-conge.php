@@ -127,6 +127,7 @@
                 </div>
                 <div class="row">
                     <h1 class="h5"><?php echo $count?> Demandes de congés</h1>
+                    
                 
                     <table class="table table-hover">
                         <thead class="thead-dark">
@@ -149,8 +150,8 @@
                             <td><?php echo $date_debut?></td>
                             <td><?php echo $date_fin?></td>
                             <td>
-                                <a href="#" class="btn btn-success">Approuver</a>
-                                <a href="#" class="btn btn-danger">Refuser</a>
+                                <a href=<?php echo "accorder.php?id=".$conge->getIdConge()?> class="btn btn-success">Approuver</a>
+                                <a href=<?php echo "refuser.php?id=".$conge->getIdConge()?> class="btn btn-danger">Refuser</a>
                             </td>
                         </tr>
                         <?php endforeach?>

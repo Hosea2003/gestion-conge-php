@@ -1,6 +1,7 @@
 <?php
     session_start();
     include "Model/User.php";
+    include "Model/Employee.php";
 
     function checkUser($email, $password){
         $users = getUsers();
@@ -20,7 +21,15 @@
             $_SESSION["id"]=$user->getId();
             $_SESSION["group"]=$user->getGroup();
             if($user->getGroup()=="admin")header("location:admin.php");
-            else header("location:index.php");
+            else{
+                $emp=Employee::getEmployeeByUser($user->getId());
+                if($emp->isBloque){
+                    echo "Bloquer";
+                }
+                else{
+                    header("location:index.php");
+                }
+            }
         }
     }
 ?>

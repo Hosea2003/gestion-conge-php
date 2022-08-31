@@ -9,6 +9,8 @@ if(isset($_SESSION["group"])){
     if($_SESSION["group"]=="admin"){
         $admin = getAdminById($_SESSION["id"]);
         $demandes = getDemandeConge();
+        $employeesConge = Conge::EmployeeConge();
+        $pourcent = count($employeesConge)/count(getEmployees())*100;
         $notif = getCongeNotif();
         if(isset($_GET["search"])){
             $em=getEmployees();
@@ -217,12 +219,12 @@ else{
                                         </div>
                                         <div class="row no-gutters align-items-center">
                                             <div class="col-auto">
-                                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?php echo count($employeesConge)."/".count($employees)?></div>
                                             </div>
                                             <div class="col">
                                                 <div class="progress progress-sm mr-2">
                                                     <div class="progress-bar bg-info" role="progressbar"
-                                                         style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                                         style=<?php echo "width: ".$pourcent?> aria-valuenow="50" aria-valuemin="0"
                                                          aria-valuemax="100"></div>
                                                 </div>
                                             </div>
@@ -277,7 +279,7 @@ else{
                         <td><?php echo $employee->getUser()->getEmail()?></td>
                         <td>
                             <a href=<?php echo "update-employee.php?id=".$employee->getId()?> class="btn btn-primary">Modifer</a>
-                            <a href="#" class="btn btn-danger">Delete</a>
+                            <a href=<?php echo "bloquer.php?id=".$employee->getId()?> class="btn btn-danger"><?php echo $employee->isBloque==1?"Débloquer":"Bloquer"?></a>
                         </td>
                     </tr>
                     <?php endforeach?>

@@ -2,17 +2,19 @@
      session_start();
      include("Model/Employee.php");
      include("Model/User.php");
+
+     
+     $id_emp =$_GET["id"];
  
      if(!isset($_SESSION["group"])){
          header("location:login.php");
          return;
      }
-     if($_SESSION["group"]!="admin"){
+     if($_SESSION["group"]!="admin" && User::getUserById($_SESSION["id"])->getModel()!=$id_emp){
          echo "Not authorized";
          return;
      }
 
-     $id_emp =$_GET["id"];
      $result = getEmployeesById($id_emp);
      $employees = $result[1];
      $employee = $result[0];
@@ -32,7 +34,7 @@
         $employee->setAddress($adress);
 
         $employee->update($employees);
-        header("location:admin.php");
+        header("location:index.php");
      }
 ?>
 
