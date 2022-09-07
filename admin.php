@@ -3,7 +3,7 @@ session_start();
 include ("Model/Employee.php");
 include("Model/Admin.php");
 include("Model/Conge.php");
-
+include("Model/Notif.php");
 
 if(isset($_SESSION["group"])){
     if($_SESSION["group"]=="admin"){
@@ -12,6 +12,8 @@ if(isset($_SESSION["group"])){
         $employeesConge = Conge::EmployeeConge();
         $pourcent = count($employeesConge)/count(getEmployees())*100;
         $notif = getCongeNotif();
+
+        $passwordNotif=getNotif();
         if(isset($_GET["search"])){
             $em=getEmployees();
             $employees=array();
@@ -103,16 +105,32 @@ else{
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-bell fa-fw"></i>
                             <!-- Counter - Alerts -->
-                            <span class="badge badge-danger badge-counter"><?php echo count($notif)?>+</span>
+                            <span class="badge badge-danger badge-counter"><?php echo count($notif)+count($passwordNotif)?>+</span>
                         </a>
                         <!-- Dropdown - Alerts -->
                         <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                              aria-labelledby="alertsDropdown">
                             <h6 class="dropdown-header">
-                                Nouvelles demandes de congés
+                                Nouvelles notifications
                             </h6>
+                            <?php foreach($passwordNotif as $pass):
+                                $employee=Employee::getEmployeeByUser($pass->user->getId())?>
+                            <a class="dropdown-item d-flex align-items-center" href="reset-form.php">
+                                <div class="mr-3">
+                                    <div class="icon-circle bg-primary">
+                                        <i class="fas fa-file-alt text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="small text-gray-500"><?php echo $pass->date->format("d M Y")?></div>
+                                    <span class="font-weight-bold"> <?php echo $employee->getFirstName()." ".$employee->getName()." 
+                                    veut remettre par défaut son mot de passe"?>
+                                </span>
+                                </div>
+                            </a>
+                            <?php endforeach?>
                             <?php foreach($notif as $conge):?>
-                            <a class="dropdown-item d-flex align-items-center" href="#">
+                            <a class="dropdown-item d-flex align-items-center" href="demande-conge.php">
                                 <div class="mr-3">
                                     <div class="icon-circle bg-primary">
                                         <i class="fas fa-file-alt text-white"></i>
@@ -224,7 +242,7 @@ else{
                                             <div class="col">
                                                 <div class="progress progress-sm mr-2">
                                                     <div class="progress-bar bg-info" role="progressbar"
-                                                         style=<?php echo "width: ".$pourcent?> aria-valuenow="50" aria-valuemin="0"
+                                                         style=<?php echo sprintf("width:%f%%;", $pourcent)?> aria-valuenow="50" aria-valuemin="0"
                                                          aria-valuemax="100"></div>
                                                 </div>
                                             </div>

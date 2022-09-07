@@ -15,4 +15,5 @@
     $id=$_GET["id"];
     $result=Conge::getCongeList($id);
     $result[0]->Action($result[1], "accorder");
+    header("location:demande-conge.php");
 ?>

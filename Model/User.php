@@ -145,9 +145,17 @@ class User
     public static function getUsersUser($id){
         $users = getUsers();
         foreach($users as $u){
-            if($u->getId()==$id){
+            if($u->getId()==$id){   
                 return array(0=>$u, 1=>$users);
             }
+        }
+        return null;
+    }
+
+    public static function getUserByemail($email){
+        $users=getUsers();
+        foreach($users as $u){
+            if($u->getEmail()==$email)return $u;
         }
         return null;
     }

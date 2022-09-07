@@ -189,8 +189,8 @@
             $today = new DateTime();
             foreach($conges as $conge){
                 if($conge->getIsAccorde()=="accorder"){
-                    if($today->getTimestamp()>=$conge->getDateDebut()->getTimeStamp())
-                        $employee[]=$conge->getEmployee();
+                    if($today>=$conge->getDateDebut())
+                        $employees[]=$conge->getEmployee();
                 }
             }
             return $employees;

@@ -1,8 +1,8 @@
 <?php
     session_start();
     include ("Model/Admin.php");
-    include ("Model/Conge.php");
     include ("Model/Employee.php");
+    include ("Model/Notif.php");
 
     if(!isset($_SESSION["group"])){
         header("location:login.php");
@@ -11,19 +11,19 @@
         echo "Not authorized";
         return;
     }
-    
     $admin = getAdminById($_SESSION["id"]);
-    $conges = getDemandeConge();
-    if(isset($_GET["search"])){
+    $notif=getNotif();
+    if(isset($_GET["word"])){
+        $notif=array();
         $word = strtolower($_GET["word"]);
-        $conges = array();
-        foreach(getDemandeConge() as $conge){
-            $e= getEmployeeById($conge->getId());
-            if(str_contains(strtolower($e->getFirstName()), $word) || str_contains(strtolower($e->getName()), $word))
-                    $conges[]=$conge;
+        foreach(getNotif() as $n){
+            $e=Employee::getEmployeeByUser($n->user->getId());
+            if(str_contains(strtolower($e->getFirstName()), $word) || str_contains(strtolower($e->getName()), $word)){
+                $notif[]=$n;
+            }
         }
     }
-    $count = count($conges);
+    $count=count($notif);
 ?>
 
 <!DOCTYPE html>
@@ -66,7 +66,7 @@
 
                 <!-- Topbar Search -->
                 <div>
-                    <form action="demande-conge.php" method="get"
+                    <form action="reset-form.php" method="get"
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
                             <input type="text" class="form-control bg-light border-0 small" placeholder="Rechercher employé"
@@ -78,7 +78,7 @@
                             </div>
                         </div>
                     </form>
-                    <a href="demande-conge.php" class="btn btn-primary">Raffraichir</a>
+                    <a href="reset-form.php" class="btn btn-primary">Raffraichir</a>
                 </div>
                 
                 
@@ -126,32 +126,30 @@
                             class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>-->
                 </div>
                 <div class="row">
-                    <h1 class="h5"><?php echo $count?> Demandes de congés</h1>
+                    <h1 class="h5"><?php echo $count?> Demandes de reset de mot de passe</h1>
                     
                 
                     <table class="table table-hover">
                         <thead class="thead-dark">
                         <tr>
                             <th scope="col">Nom de l'employé</th>
-                            <th scope="col">Date début</th>
-                            <th scope="col">Date Fin</th>
+                            <th scope="col">Date </th>
                             <th scope="col">Action</th>
                         </tr>
                         </thead>
                         <tbody>
                         <?php
-                            foreach($conges as $conge):
-                                $employee = getEmployeeById($conge->getId());
-                                $date_debut = $conge->getDateDebut()->format("d M Y");
-                                $date_fin = $conge->getDateFin()->format("d M Y");
-                        ?>
+                            foreach($notif as $n):
+                                $employee = Employee::getEmployeeByUser($n->user->getId());
+                                $date=$n->date->format("Y M d");
+                                $id=$n->user->getId();
+                                $link="reset.php?id=".$n->user->getId();
+                        ?>      
                         <tr>
                             <td><?php echo $employee->getFirstName()." ".$employee->getName()?></td>
-                            <td><?php echo $date_debut?></td>
-                            <td><?php echo $date_fin?></td>
+                            <td><?php echo $date?></td>
                             <td>
-                                <a href=<?php echo "accorder.php?id=".$conge->getIdConge()?> class="btn btn-success">Approuver</a>
-                                <a href=<?php echo "refuser.php?id=".$conge->getIdConge()?> class="btn btn-danger">Refuser</a>
+                                <a href=<?php echo sprintf("reset.php?id=%d", $id)?> class="btn btn-success">Reset</a>
                             </td>
                         </tr>
                         <?php endforeach?>
